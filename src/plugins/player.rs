@@ -1,26 +1,30 @@
 use bevy::prelude::{Commands, Input, KeyCode, Plugin, Query, Res, With};
 use bracket_bevy::prelude::{to_cp437, BLACK, RGB, YELLOW};
 
-use crate::components::{Player, Position, Renderable};
+use crate::{components::{Player, Position, Renderable}, res};
+
 
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
-        app.add_startup_system(setup).add_system(move_player);
+        app
+        .add_startup_system(setup)
+        .add_system(move_player);
     }
 }
 
 fn setup(mut commands: Commands) {
+    let(x,y) = res::setup(&mut commands).1.0[0].center();
     commands
-        .spawn()
-        .insert(Position { x: 40, y: 25 })
-        .insert(Renderable {
-            glyph: to_cp437('@'),
-            fg: RGB::named(YELLOW),
-            bg: RGB::named(BLACK),
-        })
-        .insert(Player);
+    .spawn()
+    .insert(Position { x, y })
+    .insert(Renderable {
+        glyph: to_cp437('@'),
+        fg: RGB::named(YELLOW),
+        bg: RGB::named(BLACK),
+    })
+    .insert(Player);
 }
 
 fn move_player(keys: Res<Input<KeyCode>>, mut query: Query<&mut Position, With<Player>>) {
