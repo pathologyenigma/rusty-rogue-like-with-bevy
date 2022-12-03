@@ -1,7 +1,7 @@
 use bevy::prelude::{Commands, Input, KeyCode, Plugin, Query, Res, With};
 use bracket_bevy::prelude::{to_cp437, BLACK, RGB, YELLOW};
 
-use crate::{components::{Player, Position, Renderable}, res};
+use crate::{components::{Player, Position, Renderable, ViewShed}, res::{self, Map, xy_idx, TileType}};
 
 
 pub struct PlayerPlugin;
@@ -15,7 +15,7 @@ impl Plugin for PlayerPlugin {
 }
 
 fn setup(mut commands: Commands) {
-    let(x,y) = res::setup(&mut commands).1.0[0].center();
+    let(x,y) = res::map_setup(&mut commands).rooms[0].center();
     commands
     .spawn()
     .insert(Position { x, y })
@@ -24,12 +24,17 @@ fn setup(mut commands: Commands) {
         fg: RGB::named(YELLOW),
         bg: RGB::named(BLACK),
     })
-    .insert(Player);
+    .insert(Player)
+    .insert(ViewShed{
+        visible_tiles: Vec::new(),
+        range: 8,
+        dirty: true
+    });
 }
 
-fn move_player(keys: Res<Input<KeyCode>>, mut query: Query<&mut Position, With<Player>>) {
+fn move_player(keys: Res<Input<KeyCode>>, mut query: Query<(&mut Position, &mut ViewShed), With<Player>>, map: Res<Map>) {
     let mut delta: Position = Default::default();
-    let mut player = query.single_mut();
+    let (mut pos, mut viewshed) = query.single_mut();
     if keys.just_pressed(KeyCode::Left) {
         delta += Position { x: -1, y: 0 };
     }
@@ -42,5 +47,12 @@ fn move_player(keys: Res<Input<KeyCode>>, mut query: Query<&mut Position, With<P
     if keys.just_pressed(KeyCode::Down) {
         delta += Position { x: 0, y: 1 };
     }
-    *player += delta;
+    let destination_idx = xy_idx(pos.x + delta.x, pos.y + delta.y);
+    if map.tiles[destination_idx] != TileType::Wall {
+        pos.x = 79.min((pos.x + delta.x).max(0));
+        pos.y = 49.min((pos.y + delta.y).max(0));
+
+        viewshed.dirty = true;
+    }
 }
+

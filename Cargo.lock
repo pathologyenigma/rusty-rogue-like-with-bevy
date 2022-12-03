@@ -864,6 +864,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d8c1fef690941d3e7788d328517591fecc684c084084702d6ff1641e993699a"
 
 [[package]]
+name = "bracket-algorithm-traits"
+version = "0.8.2"
+source = "git+https://github.com/amethyst/bracket-lib?branch=bevy#722b7e085b28520c60268dad0699f650ec73ea25"
+dependencies = [
+ "bracket-geometry",
+ "smallvec",
+]
+
+[[package]]
 name = "bracket-bevy"
 version = "0.9.0"
 source = "git+https://github.com/amethyst/bracket-lib?branch=bevy#722b7e085b28520c60268dad0699f650ec73ea25"
@@ -890,6 +899,17 @@ version = "0.8.3"
 source = "git+https://github.com/amethyst/bracket-lib?branch=bevy#722b7e085b28520c60268dad0699f650ec73ea25"
 dependencies = [
  "ultraviolet",
+]
+
+[[package]]
+name = "bracket-pathfinding"
+version = "0.8.4"
+source = "git+https://github.com/amethyst/bracket-lib?branch=bevy#722b7e085b28520c60268dad0699f650ec73ea25"
+dependencies = [
+ "bracket-algorithm-traits",
+ "bracket-geometry",
+ "num-rational",
+ "smallvec",
 ]
 
 [[package]]
@@ -2592,7 +2612,9 @@ name = "rusty-rogue-like"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "bracket-algorithm-traits",
  "bracket-bevy",
+ "bracket-pathfinding",
 ]
 
 [[package]]

@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 bevy = "0.8"
 bracket-bevy = {git = "https://github.com/amethyst/bracket-lib", branch = "bevy"}
+bracket-algorithm-traits = {git = "https://github.com/amethyst/bracket-lib", branch = "bevy"}
+bracket-pathfinding = {git = "https://github.com/amethyst/bracket-lib", branch = "bevy"}
